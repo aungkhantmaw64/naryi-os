@@ -6,43 +6,32 @@
 #include <zephyr/sys/__assert.h>
 
 //! Module registration for logging
-LOG_MODULE_REGISTER(screen);
+LOG_MODULE_REGISTER(screen, CONFIG_LOG_DEFAULT_LEVEL);
 
 int screen_enter(screen_api_t* api)
 {
-    if (api->enter == NULL)
-    {
-        LOG_ERR("api->enter is invalid (NULL).");
-        return -EINVAL;
-    }
+    __ASSERT((api && api->enter), "Invalid api at line %d, in %s", __LINE__,
+             __func__);
     return api->enter();
 }
 
 int screen_refresh(screen_api_t* api)
 {
-    if (!api || api->refresh == NULL)
-    {
-        LOG_ERR("api->enter is invalid (NULL).");
-        return -EINVAL;
-    }
+    __ASSERT((api && api->refresh), "Invalid api at line %d, in %s", __LINE__,
+             __func__);
     return api->refresh();
 }
 
 int screen_exit(screen_api_t* api)
 {
-    if (api->exit == NULL)
-    {
-        LOG_ERR("api->exit is invalid (NULL).");
-        return -EINVAL;
-    }
+    __ASSERT((api && api->exit), "Invalid api at line %d, in %s", __LINE__,
+             __func__);
     return api->exit();
 }
 
 bool screen_is_active(screen_api_t* api)
 {
-    if (api->is_active == NULL)
-    {
-        LOG_ERR("api->is_active is invalid (NULL).");
-    }
+    __ASSERT((api && api->is_active), "Invalid api at line %d, in %s", __LINE__,
+             __func__);
     return api->is_active();
 }

@@ -16,7 +16,7 @@
 #include "modules/ui/screen_manager.h"
 #include "modules/ui/watchface.h"
 
-LOG_MODULE_REGISTER(main);
+LOG_MODULE_REGISTER(main, CONFIG_LOG_DEFAULT_LEVEL);
 
 int main(void)
 {

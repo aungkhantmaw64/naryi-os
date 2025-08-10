@@ -6,7 +6,7 @@
 #include "screen_api.h"
 
 //! Module registration for logging
-LOG_MODULE_REGISTER(watchface);
+LOG_MODULE_REGISTER(watchface, CONFIG_LOG_DEFAULT_LEVEL);
 
 LV_IMG_DECLARE(wavy_bg);
 LV_FONT_DECLARE(orbitron_47);

@@ -5,6 +5,7 @@
 #include <zephyr/logging/log.h>
 #include <zephyr/sys/__assert.h>
 
+//! Module registration for logging
 LOG_MODULE_REGISTER(screen);
 
 int screen_enter(screen_api_t* api)

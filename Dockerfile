@@ -23,8 +23,4 @@ COPY scripts/container-entrypoint.sh /entrypoint.sh
 
 RUN chmod +x /entrypoint.sh
 
-RUN useradd -m -s /bin/bash naryi-os
-
-USER naryi-os
-
 ENTRYPOINT [ "/entrypoint.sh" ]

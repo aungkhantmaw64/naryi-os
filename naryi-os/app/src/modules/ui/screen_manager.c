@@ -29,11 +29,11 @@
  */
 static void screen_manager_thread_entry_point(void*, void*, void*);
 
-//! Module registration for logging
-LOG_MODULE_REGISTER(screen_manager, CONFIG_LOG_DEFAULT_LEVEL);
-
-//! Stack allocation for screen manager thread
-K_THREAD_STACK_DEFINE(screen_manager_stack, SCREEN_MANAGER_STACK_SIZE);
+/********************************************************************************************************************
+ *
+ *                                         Private Variables
+ *
+ ********************************************************************************************************************/
 
 //! Screen manager thread id
 static k_tid_t g_thread_id = {0};
@@ -47,7 +47,14 @@ static uint8_t g_screen_count = 0;
 //! Added screens
 static screen_api_t* g_screens[SCREEN_MANAGER_MAX_SCREEN_COUNT] = {0};
 
+//! LCD device instance
 static const struct device* g_display_dev = {0};
+
+//! Module registration for logging
+LOG_MODULE_REGISTER(screen_manager, CONFIG_LOG_DEFAULT_LEVEL);
+
+//! Stack allocation for screen manager thread
+K_THREAD_STACK_DEFINE(screen_manager_stack, SCREEN_MANAGER_STACK_SIZE);
 
 /********************************************************************************************************************
  *
@@ -58,6 +65,7 @@ static const struct device* g_display_dev = {0};
 int screen_manager_init(void)
 {
     LOG_DBG("starting screen manager.");
+
     g_display_dev = DEVICE_DT_GET(DT_CHOSEN(zephyr_display));
 
     if (!device_is_ready(g_display_dev))

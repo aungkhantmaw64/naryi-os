@@ -5,27 +5,130 @@
 
 #include "screen_api.h"
 
+/********************************************************************************************************************
+ *
+ *                                                Typedefs
+ *
+ ********************************************************************************************************************/
+
+/**
+ * @brief Structure representing a custom widget based on lvgl.
+ *
+ */
+typedef struct
+{
+    /**
+     * @brief Pointer to the hours and minutes object
+     */
+    lv_obj_t* hrs_mins;
+
+    /**
+     * @brief Pointer to the AM/PM indicator object.
+     */
+    lv_obj_t* am_pm;
+
+    /**
+     * @brief Pointer to the date object.
+     */
+    lv_obj_t* date;
+
+    /**
+     * @brief Pointer to the day of the week object.
+     */
+    lv_obj_t* day_of_the_week;
+
+} watchface_clock_widget;
+
+/********************************************************************************************************************
+ *
+ *                                         Private Function Prototypes
+ *
+ ********************************************************************************************************************/
+
+/**
+ * @brief Implementation of the screen_api_t's enter function for the watchface
+ * screen.
+ */
+static int watchface_enter(void);
+
+/**
+ * @brief Implementation of the screen_api_t's refresh function for the
+ * watchface screen.
+ */
+static int watchface_refresh(void);
+
+/**
+ * @brief Implementation of the screen_api_t's exit function for the
+ * watchface screen.
+ */
+static int watchface_exit(void);
+
+/**
+ * @brief Implementation of the screen_api_t's is_active function for the
+ * watchface screen.
+ */
+bool watchface_is_active(void);
+
+/********************************************************************************************************************
+ *
+ *                                         Private Variables
+ *
+ ********************************************************************************************************************/
+
+//! Declare the image resource for the wavy background.
+LV_IMG_DECLARE(wavy_bg);
+
+//! Declare the font resource for Orbitron size 47.
+LV_FONT_DECLARE(orbitron_47);
+
 //! Module registration for logging
 LOG_MODULE_REGISTER(watchface, CONFIG_LOG_DEFAULT_LEVEL);
 
-LV_IMG_DECLARE(wavy_bg);
-LV_FONT_DECLARE(orbitron_47);
+// Global pointer to the root page object.
+static lv_obj_t* g_root_page = {0};
 
-typedef struct
-{
-    lv_obj_t* hrs_mins;
-    lv_obj_t* am_pm;
-    lv_obj_t* date;
-    lv_obj_t* day_of_the_week;
-} pdw_clock_widget_t;
+// Global pointer to the background image object.
+static lv_obj_t* g_background_img = {0};
 
-static lv_obj_t*          g_root_page      = {0};
-static lv_obj_t*          g_background_img = {0};
-static pdw_clock_widget_t g_clock_widget   = {0};
+// Global instance of the watchface clock widget structure.
+static watchface_clock_widget g_clock_widget = {0};
 
+//! Watchface screen API instance
 static screen_api_t g_watchface = {0};
 
+//! Global flag indicating whether the screen manager is active.
 static bool g_is_active = false;
+
+/********************************************************************************************************************
+ *
+ *                                         Public Function Definitions
+ *
+ ********************************************************************************************************************/
+
+bool watchface_is_active(void)
+{
+    return g_is_active;
+}
+
+screen_api_t* watchface_create()
+{
+    g_watchface.enter     = watchface_enter;
+    g_watchface.exit      = watchface_exit;
+    g_watchface.is_active = watchface_is_active;
+    g_watchface.refresh   = watchface_refresh;
+    return &g_watchface;
+}
+
+int watchface_destroy(screen_api_t* api)
+{
+    return 0;
+}
+
+/********************************************************************************************************************
+ *
+ *                                         Private Function Definitions
+ *
+ ********************************************************************************************************************/
 
 static int watchface_enter(void)
 {
@@ -106,24 +209,5 @@ static int watchface_refresh(void)
 static int watchface_exit(void)
 {
     g_is_active = false;
-    return 0;
-}
-
-bool watchface_is_active(void)
-{
-    return g_is_active;
-}
-
-screen_api_t* watchface_create()
-{
-    g_watchface.enter     = watchface_enter;
-    g_watchface.exit      = watchface_exit;
-    g_watchface.is_active = watchface_is_active;
-    g_watchface.refresh   = watchface_refresh;
-    return &g_watchface;
-}
-
-int watchface_destroy(screen_api_t* api)
-{
     return 0;
 }

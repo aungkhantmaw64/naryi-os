@@ -20,9 +20,10 @@ LOG_MODULE_REGISTER(main);
 
 int main(void)
 {
-    screen_manager_push_screen(watchface_create());
+    __ASSERT(screen_manager_push_screen(watchface_create()) == 0,
+             "Failed to push the watchface to screen_manager.");
 
-    screen_manager_start();
+    __ASSERT(screen_manager_start() == 0, "Failed to start the screen_manager");
 
     return 0;
 }

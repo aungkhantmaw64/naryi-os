@@ -10,9 +10,9 @@
 #include "screen_api.h"
 
 //! Size of the stack memory allocated for screen_manager thread
-#define SCREEN_MANAGER_STACK_SIZE (4048)
+#define SCREEN_MANAGER_STACK_SIZE (16 * 1024)
 //! Priority for screen_manager task
-#define SCREEN_MANAGER_PRIORITY (-1)
+#define SCREEN_MANAGER_PRIORITY (5)
 //! Screen count limit
 #define SCREEN_MANAGER_MAX_SCREEN_COUNT (3)
 //! Index of the screens that will be displayed at the start up

@@ -25,6 +25,31 @@
 			height = <240>;
 		};
 	};
+
+
+  buttons {
+    button1: button_1 {
+      gpios = <&gpio0 15 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+      label = "Left Button";
+    };
+
+    button2: button_2 {
+      gpios = <&gpio0 16 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+      label = "Right Button";
+    };
+
+    button3: button_3 {
+      gpios = <&gpio0 17 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+      label = "Enter Button";
+    };
+
+    button4: button_4 {
+      gpios = <&gpio0 18 (GPIO_PULL_UP | GPIO_ACTIVE_LOW)>;
+      label = "Back Button";
+    };
+
+  };
+
 };
 
 &spi2 {

@@ -202,7 +202,6 @@ static int watchface_enter(void)
 
 static int watchface_refresh(void)
 {
-    lv_task_handler();
     return 0;
 }
 

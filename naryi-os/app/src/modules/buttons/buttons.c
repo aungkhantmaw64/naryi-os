@@ -4,6 +4,9 @@
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
+#include <zephyr/zbus/zbus.h>
+
+#include "msg_bus.h"
 
 enum
 {
@@ -42,6 +45,8 @@ static struct gpio_callback button_cb_data = {0};
 
 //! Module registration for logging
 LOG_MODULE_REGISTER(buttons, CONFIG_LOG_DEFAULT_LEVEL);
+
+ZBUS_CHAN_DECLARE(msg_bus_buttons_chan);
 
 /********************************************************************************************************************
  *
@@ -119,7 +124,25 @@ static void button_pressed(const struct device* dev, struct gpio_callback* cb,
     {
         if (BIT(buttons[i].pin) == pins)
         {
-            LOG_INF("Pin %d is pressed!\n", buttons[i].pin);
+            msg_bus_buttons_msg_t msg = {
+                .direction = MSG_BUS_BUTTON_DIR_UNKNOWN,
+            };
+            switch (i)
+            {
+                case LEFT_BUTTON:
+                    msg.direction = MSG_BUS_BUTTON_DIR_LEFT;
+                    break;
+                case RIGHT_BUTTON:
+                    msg.direction = MSG_BUS_BUTTON_DIR_RIGHT;
+                    break;
+                case ENTER_BUTTON:
+                    msg.direction = MSG_BUS_BUTTON_DIR_ENTER;
+                    break;
+                case BACK_BUTTON:
+                    msg.direction = MSG_BUS_BUTTON_DIR_BACK;
+                    break;
+            }
+            zbus_chan_pub(&msg_bus_buttons_chan, &msg, K_NO_WAIT);
         }
     }
 }

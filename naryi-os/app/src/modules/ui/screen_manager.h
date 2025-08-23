@@ -4,17 +4,6 @@
 #include "screen_api.h"
 
 /**
- * @brief Initializes the screen manager.
- *
- * This function sets up the necessary resources for the screen manager
- * to operate. It must be called before using any other screen manager
- * functions.
- *
- * @return int Returns 0 on success, or a negative error code on failure.
- */
-int screen_manager_init(void);
-
-/**
  * @brief Pushes a new screen onto the screen stack.
  *
  * This function adds a new screen to the stack managed by the screen manager.

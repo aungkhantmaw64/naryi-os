@@ -7,7 +7,9 @@
 
 #include "app.h"
 #include "msg_bus.h"
-#include "watchface.h"
+#include "music_app.h"
+#include "settings_app.h"
+#include "watchface_app.h"
 
 #define APP_MANAGER_MAX_APPS (4)
 
@@ -29,6 +31,8 @@ typedef enum
 static void app_manager_listener_callback(const struct zbus_channel* chan);
 
 static int app_manager_init(void);
+
+static int app_manager_navigate_apps(const msg_bus_buttons_msg_t* p_msg);
 
 /********************************************************************************************************************
  *
@@ -57,7 +61,7 @@ int app_manager_start(void)
 {
     LOG_INF("screen manager has been started.");
 
-    app_show_menu_icon(g_apps[g_current_app]);
+    app_enter(g_apps[g_current_app]);
 
     return 0;
 }
@@ -75,8 +79,11 @@ int app_manager_stop(void)
 
 static int app_manager_init(void)
 {
-    g_apps[APP_MANAGER_APP_TYPE_WATCHFACE] = watchface_create();
+    g_apps[APP_MANAGER_APP_TYPE_WATCHFACE] = watchface_app_create();
 
+    g_apps[APP_MANAGER_APP_TYPE_SETTINGS] = settings_app_create();
+
+    g_apps[APP_MANAGER_APP_TYPE_MUSIC] = music_app_create();
     return 0;
 }
 
@@ -86,7 +93,7 @@ static void app_manager_listener_callback(const struct zbus_channel* chan)
     {
         const msg_bus_buttons_msg_t* p_buttons_msg = zbus_chan_const_msg(chan);
 
-        LOG_INF("Button pressed: %d.", p_buttons_msg->direction);
+        LOG_DBG("Button pressed: %d.", p_buttons_msg->direction);
 
         if (app_is_active(g_apps[g_current_app]))
         {
@@ -97,8 +104,43 @@ static void app_manager_listener_callback(const struct zbus_channel* chan)
         {
             // MENU MODE
             // Navigate between APPS
+            app_manager_navigate_apps(p_buttons_msg);
         }
     }
+}
+
+static int app_manager_navigate_apps(const msg_bus_buttons_msg_t* p_msg)
+{
+    switch (p_msg->direction)
+    {
+        case MSG_BUS_BUTTON_DIR_ENTER:
+            LOG_INF("Pressed ENTER!");
+            app_enter(g_apps[g_current_app]);
+            break;
+        case MSG_BUS_BUTTON_DIR_LEFT:
+            LOG_INF("Pressed LEFT!");
+            if (g_current_app > APP_MANAGER_APP_TYPE_MINIMUM)
+            {
+                g_current_app--;
+            }
+            break;
+        case MSG_BUS_BUTTON_DIR_RIGHT:
+            LOG_INF("Pressed RIGHT!");
+            if (g_current_app < APP_MANAGER_APP_TYPE_MAXIMUM)
+            {
+                g_current_app++;
+            }
+            break;
+        case MSG_BUS_BUTTON_DIR_BACK:
+            LOG_INF("Pressed EXIT!");
+            break;
+        case MSG_BUS_BUTTON_DIR_UNKNOWN:
+            break;
+        default:
+            break;
+    }
+    LOG_INF("Current app: %d", g_current_app);
+    return 0;
 }
 
 SYS_INIT_NAMED(app_manager_init, app_manager_init, APPLICATION,

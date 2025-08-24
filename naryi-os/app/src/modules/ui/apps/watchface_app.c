@@ -1,4 +1,4 @@
-#include "watchface.h"
+#include "watchface_app.h"
 
 #include <lvgl.h>
 #include <zephyr/logging/log.h>
@@ -103,7 +103,7 @@ static bool g_is_active = false;
  *
  ********************************************************************************************************************/
 
-app_api_t* watchface_create()
+app_api_t* watchface_app_create()
 {
     g_watchface.enter          = watchface_enter;
     g_watchface.exit           = watchface_exit;
@@ -113,7 +113,7 @@ app_api_t* watchface_create()
     return &g_watchface;
 }
 
-int watchface_destroy(app_api_t* api)
+int watchface_app_destroy(app_api_t* api)
 {
     return 0;
 }
@@ -191,6 +191,8 @@ static int watchface_enter(void)
 
     lv_obj_align_to(g_clock_widget.day_of_the_week, g_clock_widget.date,
                     LV_ALIGN_OUT_BOTTOM_MID, 0, 0);
+
+    // g_is_active = true;
     return 0;
 }
 
@@ -212,5 +214,5 @@ static int watchface_on_button(const msg_bus_buttons_msg_t* p_msg)
 
 static int watchface_show_menu_icon(void)
 {
-    return watchface_enter();
+    return 0;
 }

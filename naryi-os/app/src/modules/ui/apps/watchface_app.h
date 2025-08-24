@@ -1,5 +1,5 @@
-#ifndef __WATCHFACE_H__
-#define __WATCHFACE_H__
+#ifndef __WATCHFACE_APP_H__
+#define __WATCHFACE_APP_H__
 
 #include "app.h"
 
@@ -11,7 +11,7 @@
  *
  * @return app_api_t* Pointer to the initialized watchface screen API.
  */
-app_api_t* watchface_create();
+app_api_t* watchface_app_create();
 
 /**
  * @brief Destroys the watchface screen.
@@ -21,6 +21,6 @@ app_api_t* watchface_create();
  * @param api Pointer to the watchface screen API to be destroyed.
  * @return int Returns 0 on success, or a negative error code on failure.
  */
-int watchface_destroy(app_api_t* api);
+int watchface_app_destroy(app_api_t* api);
 
 #endif

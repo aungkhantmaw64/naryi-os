@@ -1,5 +1,6 @@
 #include "buttons.h"
 
+#include <stdbool.h>
 #include <zephyr/device.h>
 #include <zephyr/drivers/gpio.h>
 #include <zephyr/kernel.h>
@@ -54,6 +55,7 @@ static struct gpio_callback button_cb_data = {0};
 
 static buttons_delayable_work_t g_cooldown_work = {0};
 
+static bool g_rw_ready = true;
 //! Module registration for logging
 LOG_MODULE_REGISTER(buttons, CONFIG_LOG_DEFAULT_LEVEL);
 
@@ -135,8 +137,11 @@ static void button_pressed(const struct device* dev, struct gpio_callback* cb,
                            uint32_t pins)
 {
     g_cooldown_work.pins = pins;
-
-    k_work_schedule(&g_cooldown_work.timed_work, K_MSEC(15));
+    if (g_rw_ready)
+    {
+        k_work_schedule(&g_cooldown_work.timed_work, K_MSEC(15));
+        g_rw_ready = false;
+    }
 }
 
 static void buttons_cooldown_work_handler(struct k_work* work)
@@ -169,6 +174,7 @@ static void buttons_cooldown_work_handler(struct k_work* work)
                     break;
             }
             zbus_chan_pub(&msg_bus_buttons_chan, &msg, K_NO_WAIT);
+            g_rw_ready = true;
         }
     }
 }

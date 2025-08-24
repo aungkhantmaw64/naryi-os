@@ -13,9 +13,11 @@
 
 typedef enum
 {
-    APP_MANAGER_APP_TYPE_WATCHFACE = 0,
+    APP_MANAGER_APP_TYPE_MINIMUM   = 0,
+    APP_MANAGER_APP_TYPE_WATCHFACE = APP_MANAGER_APP_TYPE_MINIMUM,
     APP_MANAGER_APP_TYPE_SETTINGS,
     APP_MANAGER_APP_TYPE_MUSIC,
+    APP_MANAGER_APP_TYPE_MAXIMUM = APP_MANAGER_APP_TYPE_MUSIC,
 } app_manager_app_type_t;
 
 /********************************************************************************************************************
@@ -55,7 +57,7 @@ int app_manager_start(void)
 {
     LOG_INF("screen manager has been started.");
 
-    app_enter(g_apps[g_current_app]);
+    app_show_menu_icon(g_apps[g_current_app]);
 
     return 0;
 }

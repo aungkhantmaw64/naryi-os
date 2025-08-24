@@ -20,12 +20,21 @@ enum
     BACK_BUTTON,
 };
 
+typedef struct button_work
+{
+    uint32_t pins;
+
+    struct k_work_delayable timed_work;
+} buttons_delayable_work_t;
+
 /**
  * @brief Callback to be executed when any button is pressed
  *
  */
 static void button_pressed(const struct device* dev, struct gpio_callback* cb,
                            uint32_t pins);
+
+static void buttons_cooldown_work_handler(struct k_work* work);
 
 /********************************************************************************************************************
  *
@@ -42,6 +51,8 @@ static struct gpio_dt_spec buttons[] = {
 
 //! Button callback context
 static struct gpio_callback button_cb_data = {0};
+
+static buttons_delayable_work_t g_cooldown_work = {0};
 
 //! Module registration for logging
 LOG_MODULE_REGISTER(buttons, CONFIG_LOG_DEFAULT_LEVEL);
@@ -103,6 +114,9 @@ int buttons_start(void)
                 p_button->pin);
     }
 
+    k_work_init_delayable(&g_cooldown_work.timed_work,
+                          buttons_cooldown_work_handler);
+
     return 0;
 }
 
@@ -120,9 +134,21 @@ int buttons_stop(void)
 static void button_pressed(const struct device* dev, struct gpio_callback* cb,
                            uint32_t pins)
 {
+    g_cooldown_work.pins = pins;
+
+    k_work_schedule(&g_cooldown_work.timed_work, K_MSEC(15));
+}
+
+static void buttons_cooldown_work_handler(struct k_work* work)
+{
+    struct k_work_delayable* dwork = k_work_delayable_from_work(work);
+
+    buttons_delayable_work_t* ctx =
+        CONTAINER_OF(dwork, buttons_delayable_work_t, timed_work);
+
     for (int i = 0; i < ARRAY_SIZE(buttons); i++)
     {
-        if (BIT(buttons[i].pin) == pins)
+        if (BIT(buttons[i].pin) == ctx->pins)
         {
             msg_bus_buttons_msg_t msg = {
                 .direction = MSG_BUS_BUTTON_DIR_UNKNOWN,

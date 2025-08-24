@@ -47,3 +47,10 @@ int app_on_button(app_api_t* api, const msg_bus_buttons_msg_t* p_msg)
              __func__);
     return api->on_button(p_msg);
 }
+
+int app_show_menu_icon(app_api_t* api)
+{
+    __ASSERT((api && api->show_menu_icon), "Invalid api at line %d, in %s",
+             __LINE__, __func__);
+    return api->show_menu_icon();
+}

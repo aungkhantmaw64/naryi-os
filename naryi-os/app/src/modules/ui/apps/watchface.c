@@ -65,6 +65,8 @@ static bool watchface_is_active(void);
 
 static int watchface_on_button(const msg_bus_buttons_msg_t* p_msg);
 
+static int watchface_show_menu_icon(void);
+
 /********************************************************************************************************************
  *
  *                                         Private Variables
@@ -103,10 +105,11 @@ static bool g_is_active = false;
 
 app_api_t* watchface_create()
 {
-    g_watchface.enter     = watchface_enter;
-    g_watchface.exit      = watchface_exit;
-    g_watchface.is_active = watchface_is_active;
-    g_watchface.on_button = watchface_on_button;
+    g_watchface.enter          = watchface_enter;
+    g_watchface.exit           = watchface_exit;
+    g_watchface.is_active      = watchface_is_active;
+    g_watchface.on_button      = watchface_on_button;
+    g_watchface.show_menu_icon = watchface_show_menu_icon;
     return &g_watchface;
 }
 
@@ -203,6 +206,11 @@ static bool watchface_is_active(void)
 }
 
 static int watchface_on_button(const msg_bus_buttons_msg_t* p_msg)
+{
+    return 0;
+}
+
+static int watchface_show_menu_icon(void)
 {
     return 0;
 }

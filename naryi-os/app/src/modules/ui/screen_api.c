@@ -41,6 +41,20 @@ int screen_exit(screen_api_t* api)
     return api->exit();
 }
 
+int screen_up(screen_api_t* api)
+{
+    __ASSERT((api && api->left), "Invalid api at line %d, in %s", __LINE__,
+             __func__);
+    return api->left();
+}
+
+int screen_down(screen_api_t* api)
+{
+    __ASSERT((api && api->right), "Invalid api at line %d, in %s", __LINE__,
+             __func__);
+    return api->right();
+}
+
 bool screen_is_active(screen_api_t* api)
 {
     __ASSERT((api && api->is_active), "Invalid api at line %d, in %s", __LINE__,

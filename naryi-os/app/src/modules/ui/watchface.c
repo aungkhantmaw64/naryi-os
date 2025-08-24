@@ -63,6 +63,10 @@ static int watchface_refresh(void);
  */
 static int watchface_exit(void);
 
+static int watchface_left(void);
+
+static int watchface_right(void);
+
 /**
  * @brief Implementation of the screen_api_t's is_active function for the
  * watchface screen.
@@ -114,6 +118,8 @@ screen_api_t* watchface_create()
 {
     g_watchface.enter     = watchface_enter;
     g_watchface.exit      = watchface_exit;
+    g_watchface.left      = watchface_left;
+    g_watchface.right     = watchface_right;
     g_watchface.is_active = watchface_is_active;
     g_watchface.refresh   = watchface_refresh;
     return &g_watchface;
@@ -201,6 +207,16 @@ static int watchface_enter(void)
 }
 
 static int watchface_refresh(void)
+{
+    return 0;
+}
+
+static int watchface_left(void)
+{
+    return 0;
+}
+
+static int watchface_right(void)
 {
     return 0;
 }

@@ -30,8 +30,12 @@ static void screen_manager_listener_callback(const struct zbus_channel* chan);
 //! Number of added screens
 static uint8_t g_screen_count = 0;
 
+static int g_current_screen = 0;
+
 //! Added screens
 static screen_api_t* g_screens[SCREEN_MANAGER_MAX_SCREEN_COUNT] = {0};
+
+static bool g_switchable = true;
 
 //! Module registration for logging
 LOG_MODULE_REGISTER(screen_manager, CONFIG_LOG_DEFAULT_LEVEL);
@@ -80,7 +84,28 @@ static void screen_manager_listener_callback(const struct zbus_channel* chan)
 
     if (&msg_bus_buttons_chan == chan)
     {
-        buttons_msg = zbus_chan_const_msg(chan); // Direct message access
+        buttons_msg = zbus_chan_const_msg(chan);
+
         LOG_INF("Button pressed: %d.", buttons_msg->direction);
+
+        int page_number = 0;
+
+        switch (buttons_msg->direction)
+        {
+            case MSG_BUS_BUTTON_DIR_ENTER:
+                page_number = screen_enter(g_screens[g_current_screen]);
+                break;
+            case MSG_BUS_BUTTON_DIR_BACK:
+                page_number = screen_back(g_screens[g_current_screen]);
+            case MSG_BUS_BUTTON_DIR_LEFT:
+                if (g_switchable && g_current_screen > 0)
+                {
+                    g_current_screen--;
+                }
+            default:
+                break;
+        }
+
+        g_switchable = (page_number > 0);
     }
 }

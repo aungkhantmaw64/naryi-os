@@ -25,6 +25,9 @@ typedef struct screen_api_struct
      */
     int (*exit)(void);
 
+    int (*left)(void);
+
+    int (*right)(void);
     /**
      * @brief Function to refresh the screen.
      * @return Returns an integer status code.
@@ -61,6 +64,10 @@ int screen_refresh(screen_api_t* api);
  * @return Returns an integer status code.
  */
 int screen_exit(screen_api_t* api);
+
+int screen_up(screen_api_t* api);
+
+int screen_down(screen_api_t* api);
 
 /**
  * @brief Check if the screen is active using the provided API.

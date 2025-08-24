@@ -4,22 +4,24 @@
 #include "app.h"
 
 /**
- * @brief Creates a watchface screen.
+ * @brief Creates a new instance of the watchface application.
  *
- * This function initializes and returns a pointer to the watchface screen API.
- * It sets up the necessary resources for the watchface screen.
+ * This function initializes and returns a pointer to the application API
+ * for the watchface application.
  *
- * @return app_api_t* Pointer to the initialized watchface screen API.
+ * @return A pointer to the app_api_t structure representing the watchface
+ * application.
  */
 app_api_t* watchface_app_create();
 
 /**
- * @brief Destroys the watchface screen.
+ * @brief Destroys an instance of the watchface application.
  *
- * This function releases the resources associated with the watchface screen.
+ * This function cleans up resources associated with the watchface application.
  *
- * @param api Pointer to the watchface screen API to be destroyed.
- * @return int Returns 0 on success, or a negative error code on failure.
+ * @param api A pointer to the app_api_t structure representing the watchface
+ * application.
+ * @return An integer indicating success (0) or failure (non-zero).
  */
 int watchface_app_destroy(app_api_t* api);
 

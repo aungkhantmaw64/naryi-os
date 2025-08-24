@@ -173,7 +173,9 @@ static void buttons_cooldown_work_handler(struct k_work* work)
                     msg.direction = MSG_BUS_BUTTON_DIR_BACK;
                     break;
             }
+
             zbus_chan_pub(&msg_bus_buttons_chan, &msg, K_NO_WAIT);
+
             g_rw_ready = true;
         }
     }

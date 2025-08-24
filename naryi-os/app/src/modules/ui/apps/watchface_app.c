@@ -49,23 +49,34 @@ typedef struct
  * @brief Implementation of the app_api_t's enter function for the watchface
  * screen.
  */
-static int watchface_enter(void);
+static int watchface_app_enter(void);
 
 /**
  * @brief Implementation of the app_api_t's exit function for the
  * watchface screen.
  */
-static int watchface_exit(void);
+static int watchface_app_exit(void);
 
 /**
  * @brief Implementation of the app_api_t's is_active function for the
  * watchface screen.
  */
-static bool watchface_is_active(void);
+static bool watchface_app_is_active(void);
 
-static int watchface_on_button(const msg_bus_buttons_msg_t* p_msg);
+/**
+ * @brief Handles button events for the watchface application.
+ *
+ * @param p_msg Pointer to the button message structure.
+ * @return An integer indicating success (0) or failure (non-zero).
+ */
+static int watchface_app_on_button(const msg_bus_buttons_msg_t* p_msg);
 
-static int watchface_show_menu_icon(void);
+/**
+ * @brief Displays the menu icon for the watchface application.
+ *
+ * @return An integer indicating success (0) or failure (non-zero).
+ */
+static int watchface_app_show_menu_icon(void);
 
 /********************************************************************************************************************
  *
@@ -105,11 +116,11 @@ static bool g_is_active = false;
 
 app_api_t* watchface_app_create()
 {
-    g_watchface.enter          = watchface_enter;
-    g_watchface.exit           = watchface_exit;
-    g_watchface.is_active      = watchface_is_active;
-    g_watchface.on_button      = watchface_on_button;
-    g_watchface.show_menu_icon = watchface_show_menu_icon;
+    g_watchface.enter          = watchface_app_enter;
+    g_watchface.exit           = watchface_app_exit;
+    g_watchface.is_active      = watchface_app_is_active;
+    g_watchface.on_button      = watchface_app_on_button;
+    g_watchface.show_menu_icon = watchface_app_show_menu_icon;
     return &g_watchface;
 }
 
@@ -124,7 +135,7 @@ int watchface_app_destroy(app_api_t* api)
  *
  ********************************************************************************************************************/
 
-static int watchface_enter(void)
+static int watchface_app_enter(void)
 {
     g_root_page = lv_obj_create(lv_scr_act());
     // Remove border, padding, etc.
@@ -196,23 +207,23 @@ static int watchface_enter(void)
     return 0;
 }
 
-static int watchface_exit(void)
+static int watchface_app_exit(void)
 {
     g_is_active = false;
     return 0;
 }
 
-static bool watchface_is_active(void)
+static bool watchface_app_is_active(void)
 {
     return g_is_active;
 }
 
-static int watchface_on_button(const msg_bus_buttons_msg_t* p_msg)
+static int watchface_app_on_button(const msg_bus_buttons_msg_t* p_msg)
 {
     return 0;
 }
 
-static int watchface_show_menu_icon(void)
+static int watchface_app_show_menu_icon(void)
 {
     return 0;
 }

@@ -212,5 +212,5 @@ static int watchface_on_button(const msg_bus_buttons_msg_t* p_msg)
 
 static int watchface_show_menu_icon(void)
 {
-    return 0;
+    return watchface_enter();
 }

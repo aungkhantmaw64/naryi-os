@@ -21,20 +21,44 @@ enum
     BACK_BUTTON,
 };
 
+/**
+ * @struct button_work
+ * @brief Structure representing delayable work for button handling.
+ *
+ * This structure is used to manage button-related tasks that are scheduled
+ * to execute after a delay.
+ */
 typedef struct button_work
 {
+    //! Bitmask representing the pins associated with the buttons.
     uint32_t pins;
-
+    //! Delayable work structure for scheduling tasks.
     struct k_work_delayable timed_work;
 } buttons_delayable_work_t;
 
 /**
- * @brief Callback to be executed when any button is pressed
+ * @brief Callback function triggered when a button is pressed.
  *
+ * This function is invoked when a button press is detected on the specified
+ * device. It processes the button press event based on the pins that triggered
+ * the callback.
+ *
+ * @param dev Pointer to the device structure associated with the button.
+ * @param cb Pointer to the GPIO callback structure.
+ * @param pins Bitmask of pins that triggered the callback.
  */
 static void button_pressed(const struct device* dev, struct gpio_callback* cb,
                            uint32_t pins);
 
+/**
+ * @brief Work handler for button cooldown tasks.
+ *
+ * This function is executed as part of a delayed work item to handle button
+ * cooldown logic, ensuring proper debounce and preventing rapid repeated
+ * button press events.
+ *
+ * @param work Pointer to the work structure associated with the task.
+ */
 static void buttons_cooldown_work_handler(struct k_work* work);
 
 /********************************************************************************************************************
@@ -53,12 +77,26 @@ static struct gpio_dt_spec buttons[] = {
 //! Button callback context
 static struct gpio_callback button_cb_data = {0};
 
+/**
+ * @brief Global instance of delayable work for button cooldown handling.
+ *
+ * This structure is used to manage cooldown tasks for buttons, ensuring
+ * proper debounce and preventing unintended rapid button press events.
+ */
 static buttons_delayable_work_t g_cooldown_work = {0};
 
+//! Flag to indicate if a new button interrupt is ready to read.
 static bool g_rw_ready = true;
+
 //! Module registration for logging
 LOG_MODULE_REGISTER(buttons, CONFIG_LOG_DEFAULT_LEVEL);
 
+/**
+ * @brief Message bus channel declaration for button events.
+ *
+ * This channel is used to publish button press events to the message bus,
+ * allowing other modules to subscribe and react to button interactions.
+ */
 ZBUS_CHAN_DECLARE(msg_bus_buttons_chan);
 
 /********************************************************************************************************************

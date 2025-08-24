@@ -8,9 +8,8 @@
 #include <zephyr/sys/__assert.h>
 
 #include "modules/buttons/buttons.h"
+#include "modules/ui/app_manager.h"
 #include "modules/ui/display_ctrl.h"
-#include "modules/ui/screen_manager.h"
-#include "modules/ui/watchface.h"
 
 LOG_MODULE_REGISTER(main, CONFIG_LOG_DEFAULT_LEVEL);
 
@@ -18,11 +17,7 @@ int main(void)
 {
     __ASSERT(display_ctrl_start() == 0, "Failed to start display_ctrl.");
 
-    __ASSERT(screen_manager_push_screen(watchface_create()) == 0,
-             "Failed to push the watchface to screen_manager.");
-
-    __ASSERT(screen_manager_start() == 0,
-             "Failed to start the screen_manager.");
+    __ASSERT(app_manager_start() == 0, "Failed to start the screen_manager.");
 
     __ASSERT(buttons_start() == 0, "Failed to start buttons.");
 

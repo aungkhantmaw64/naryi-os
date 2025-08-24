@@ -3,7 +3,7 @@
 #include <lvgl.h>
 #include <zephyr/logging/log.h>
 
-#include "screen_api.h"
+#include "app.h"
 
 /********************************************************************************************************************
  *
@@ -46,32 +46,24 @@ typedef struct
  ********************************************************************************************************************/
 
 /**
- * @brief Implementation of the screen_api_t's enter function for the watchface
+ * @brief Implementation of the app_api_t's enter function for the watchface
  * screen.
  */
 static int watchface_enter(void);
 
 /**
- * @brief Implementation of the screen_api_t's refresh function for the
- * watchface screen.
- */
-static int watchface_refresh(void);
-
-/**
- * @brief Implementation of the screen_api_t's exit function for the
+ * @brief Implementation of the app_api_t's exit function for the
  * watchface screen.
  */
 static int watchface_exit(void);
 
-static int watchface_left(void);
-
-static int watchface_right(void);
-
 /**
- * @brief Implementation of the screen_api_t's is_active function for the
+ * @brief Implementation of the app_api_t's is_active function for the
  * watchface screen.
  */
-bool watchface_is_active(void);
+static bool watchface_is_active(void);
+
+static int watchface_on_button(const msg_bus_buttons_msg_t* p_msg);
 
 /********************************************************************************************************************
  *
@@ -98,7 +90,7 @@ static lv_obj_t* g_background_img = {0};
 static watchface_clock_widget g_clock_widget = {0};
 
 //! Watchface screen API instance
-static screen_api_t g_watchface = {0};
+static app_api_t g_watchface = {0};
 
 //! Global flag indicating whether the screen manager is active.
 static bool g_is_active = false;
@@ -109,23 +101,16 @@ static bool g_is_active = false;
  *
  ********************************************************************************************************************/
 
-bool watchface_is_active(void)
-{
-    return g_is_active;
-}
-
-screen_api_t* watchface_create()
+app_api_t* watchface_create()
 {
     g_watchface.enter     = watchface_enter;
     g_watchface.exit      = watchface_exit;
-    g_watchface.left      = watchface_left;
-    g_watchface.right     = watchface_right;
     g_watchface.is_active = watchface_is_active;
-    g_watchface.refresh   = watchface_refresh;
+    g_watchface.on_button = watchface_on_button;
     return &g_watchface;
 }
 
-int watchface_destroy(screen_api_t* api)
+int watchface_destroy(app_api_t* api)
 {
     return 0;
 }
@@ -206,23 +191,18 @@ static int watchface_enter(void)
     return 0;
 }
 
-static int watchface_refresh(void)
-{
-    return 0;
-}
-
-static int watchface_left(void)
-{
-    return 0;
-}
-
-static int watchface_right(void)
-{
-    return 0;
-}
-
 static int watchface_exit(void)
 {
     g_is_active = false;
+    return 0;
+}
+
+static bool watchface_is_active(void)
+{
+    return g_is_active;
+}
+
+static int watchface_on_button(const msg_bus_buttons_msg_t* p_msg)
+{
     return 0;
 }
